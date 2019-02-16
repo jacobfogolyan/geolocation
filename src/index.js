@@ -67,6 +67,9 @@ ReactDom.render(<App /> , document.querySelector("#root"));
 	11. We update our state object with a call to 'this.setState'
 	12. React Sees that we updated the state of a component
 	13. React Calls our 'render' method a second time
-	14. Render method returns some (updated) JSX.
-	15. React takes that JSX and updates content on the screen
+	14. Check if latitude state is available
+	15. Check if Error Message object has message
+	16. If neither work then display Loading!
+	17. Render method returns some (updated) JSX.
+	18. React takes that JSX and updates content on the screen
 */
