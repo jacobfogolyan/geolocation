@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 class App extends React.Component {
-	//constructor functions run before anything else. and override React.Components constructor function
+	//Constructor functions run before anything else. and override React.Components constructor function
 	constructor(props) {
 		// we initialize state first for now.
 		//calling super method is compulsory
@@ -9,7 +9,8 @@ class App extends React.Component {
 
 		//set state This is the only time we do direct assignment to this.state
 		this.state = {
-			lat: null
+			lat: null,
+			errorMessage: ''
 		};
 
 		window.navigator.geolocation.getCurrentPosition(
@@ -22,22 +23,37 @@ class App extends React.Component {
 				//the wrong way to set state in React is
 				//this.state.lat = position.coords.lattitue;
 			},
-			err => console.log(err)
+			err => {
+				console.log(err);
+				this.setState({
+					errorMessage: err.message
+				});
+			}
 		);
 	}
 	//components require a render() method
 	render() {
-		return <div>Latitude: { this.state.lat }</div>
+		//add condition statments to hide and show error message if error message is needed.
+		//if state errorMessage has a value and no latitude return error
+		if ( this.state.errorMessage && !this.state.lat ) {
+			return <div>Error: { this.state.errorMessage }</div>
+		}
+
+		//if errorMessage is still not set and latitude is available return latitude.
+		if ( !this.state.errorMessage && this.state.lat ) {
+			return <div>Latitude: { this.state.lat }</div>
+		}
+
+		//if neither of the above instances happen then say loading.
+		return <div>Loading!</div>
 	}
 }
 
 ReactDom.render(<App /> , document.querySelector("#root"));
 
-
 //steps that occured flow diagram
 
 /*
-
 	1. Loaded Index.html
 	2. Browser Loads JS
 	3. instance of App component is created
@@ -48,5 +64,9 @@ ReactDom.render(<App /> , document.querySelector("#root"));
 	8. App returns JSX, gets rendered to page as HTML
 	9. Created new Javascript Object for Latitude.
 	10. We get result of Geo location
-
+	11. We update our state object with a call to 'this.setState'
+	12. React Sees that we updated the state of a component
+	13. React Calls our 'render' method a second time
+	14. Render method returns some (updated) JSX.
+	15. React takes that JSX and updates content on the screen
 */
