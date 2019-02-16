@@ -47,5 +47,6 @@ ReactDom.render(<App /> , document.querySelector("#root"));
 	7. React calls the component render method
 	8. App returns JSX, gets rendered to page as HTML
 	9. Created new Javascript Object for Latitude.
+	10. We get result of Geo location
 
 */
