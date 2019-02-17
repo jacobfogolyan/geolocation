@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+
 class App extends React.Component {
 	//Constructor functions run before anything else. and override React.Components constructor function
 	constructor(props) {
@@ -31,10 +32,29 @@ class App extends React.Component {
 			}
 		);
 	}
-	//components require a render() method
+
+	//lifecycle methods
+
+	/* sit and wait for updates	*/
+	componentDidMount() {
+		console.log('My Component was rendered to the screen');
+	}
+
+	/* runs every time the component updates */
+	componentDidUpdate() {
+		console.log('My Component was just updated');
+	}
+
+	// componentWillUnmount() {} <-- removing components used rarely
+
+	//All components require a render() method
 	render() {
-		//add condition statments to hide and show error message if error message is needed.
-		//if state errorMessage has a value and no latitude return error
+		/*
+			adding condition statments to hide and show error message
+			if state errorMessage has a value and no latitude return error
+			if error message has a value then
+		*/
+
 		if ( this.state.errorMessage && !this.state.lat ) {
 			return <div>Error: { this.state.errorMessage }</div>
 		}
@@ -52,7 +72,6 @@ class App extends React.Component {
 ReactDom.render(<App /> , document.querySelector("#root"));
 
 //steps that occured flow diagram
-
 /*
 	1. Loaded Index.html
 	2. Browser Loads JS
@@ -71,5 +90,5 @@ ReactDom.render(<App /> , document.querySelector("#root"));
 	15. Check if Error Message object has message
 	16. If neither work then display Loading!
 	17. Render method returns some (updated) JSX.
-	18. React takes that JSX and updates content on the screen
+	18 . React takes that JSX and updates content on the screen
 */
