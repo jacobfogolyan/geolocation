@@ -1,94 +1,44 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+import SeasonDisplay from './SeasonDisplay';
+import Spinner from './Spinner';
 
 class App extends React.Component {
-	//Constructor functions run before anything else. and override React.Components constructor function
-	constructor(props) {
-		// we initialize state first for now.
-		//calling super method is compulsory
-		super(props);
-
-		//set state This is the only time we do direct assignment to this.state
-		this.state = {
-			lat: null,
-			errorMessage: ''
-		};
-
+	//this compiles into constructor through babel.
+	state = {
+		lat: null,
+		errorMessage: ''
+	};
+/*  lifecycle methods
+	sit and wait for updates
+	Best practice is to use DATA Loading requests in Component Did Mount */
+	componentDidMount() {
 		window.navigator.geolocation.getCurrentPosition(
-			position => {
-				//set state is a special required function for changing state in react.
-				this.setState({
-					lat: position.coords.latitude
-				});
-
-				//the wrong way to set state in React is
-				//this.state.lat = position.coords.lattitue;
-			},
-			err => {
-				console.log(err);
-				this.setState({
-					errorMessage: err.message
-				});
-			}
+			position => this.setState({ lat: position.coords.latitude }),
+			err => this.setState({ errorMessage: err.message })
 		);
 	}
-
-	//lifecycle methods
-
-	/* sit and wait for updates	*/
-	componentDidMount() {
-		console.log('My Component was rendered to the screen');
-	}
-
-	/* runs every time the component updates */
+	//runs every time the component updates
 	componentDidUpdate() {
 		console.log('My Component was just updated');
 	}
-
-	// componentWillUnmount() {} <-- removing components used rarely
-
-	//All components require a render() method
-	render() {
-		/*
-			adding condition statments to hide and show error message
-			if state errorMessage has a value and no latitude return error
-			if error message has a value then
-		*/
-
+	renderContent() {
 		if ( this.state.errorMessage && !this.state.lat ) {
 			return <div>Error: { this.state.errorMessage }</div>
 		}
-
-		//if errorMessage is still not set and latitude is available return latitude.
 		if ( !this.state.errorMessage && this.state.lat ) {
-			return <div>Latitude: { this.state.lat }</div>
+			return <SeasonDisplay lat={ this.state.lat } />
 		}
-
 		//if neither of the above instances happen then say loading.
-		return <div>Loading!</div>
+		return <Spinner message="Please accept Location Request"/>;
+	}
+	render() {
+		return (
+			<div className="border red">
+				{this.renderContent()}
+			</div>
+		);
 	}
 }
 
 ReactDom.render(<App /> , document.querySelector("#root"));
-
-//steps that occured flow diagram
-/*
-	1. Loaded Index.html
-	2. Browser Loads JS
-	3. instance of App component is created
-	4. App Components Constructor function gets called
-	5. State Object is created and assigned to the 'this.state' property
-	6. we call geolocation server
-	7. React calls the component render method
-	8. App returns JSX, gets rendered to page as HTML
-	9. Created new Javascript Object for Latitude.
-	10. We get result of Geo location
-	11. We update our state object with a call to 'this.setState'
-	12. React Sees that we updated the state of a component
-	13. React Calls our 'render' method a second time
-	14. Check if latitude state is available
-	15. Check if Error Message object has message
-	16. If neither work then display Loading!
-	17. Render method returns some (updated) JSX.
-	18 . React takes that JSX and updates content on the screen
-*/
